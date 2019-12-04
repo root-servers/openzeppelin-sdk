@@ -6,12 +6,9 @@ log() {
   echo "$*" >&2
 }
 
-# [TODO] run this only if dependencies aren't installed yet
-cd ../..
-shopt -s globstar && rm -rf **/node_modules/websocket/.git
-npm ci > /dev/null
-npx lerna bootstrap > /dev/null
-cd packages/docs
+if [ ! -d node_modules ]; then
+  yarn --cwd ../..
+fi
 
 # lib
 log "Building lib docs..."
@@ -21,8 +18,5 @@ log "Done"
 
 # cli
 log "Building CLI docs..."
-
-cd ../cli
-
-npm run gen-docs
+yarn --cwd ../cli gen-docs
 log "Done"
